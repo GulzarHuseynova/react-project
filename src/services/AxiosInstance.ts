@@ -1,0 +1,26 @@
+import axios from "axios";
+const Api_Base_URL = "https://dummyjson.com";
+const AxiosInstance=axios.create({
+    baseURL:Api_Base_URL,
+    headers:{
+         "Content-Type": "application/json;charset=utf-8",
+    }
+})
+
+AxiosInstance.interceptors.request.use((config)=>{
+    const token=localStorage.getItem("accessToken");
+    if(token){
+        config.headers.Authorization ='Bearer $(token)'
+    }
+    return config
+})
+
+AxiosInstance.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+if (error.response?.status === 401) {
+     window.location.href = "/login";
+}
+  return Promise.reject(error);
+});
+export default AxiosInstance
